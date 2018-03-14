@@ -1,0 +1,31 @@
+.jumbotron {
+	height: 200px;
+	padding-top: 30px;
+}
+.display-4 {
+	font-family: "Limelight", sans;
+	font-size: 64px;
+}
+.lead {
+	font-family: "Abel", sans;
+	font-size: 26px;
+}
+.nav {
+	background-color: hsla(193, 53%, 22%, 1);
+}
+.nav-item {
+	background-color: hsla(61, 53%, 25%, 1);
+	margin: 10px;
+	border-radius: 10px;
+	font-family: "Abel", sans;
+	font-size: 20px;
+}
+#view_saved {
+	background-color: hsla(61, 53%, 30%, 1);
+	border-radius: 10px;	
+}
+#npr {
+	background-color: hsla(345, 45%, 23%, 1);
+	border-radius: 10px;
+	border: solid gray 1px;
+}
