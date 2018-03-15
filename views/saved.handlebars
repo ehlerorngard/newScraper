@@ -8,18 +8,18 @@
 {{> notes_modal}}
 
 <div id="article_box">
-	{{#each articulos}}
+	{{#each artz}}
 	 <div class="row m-4 p-2 articleRow">
 		<div class="col-9">
 			<div class="title">{{title}}</div>
 			<div class="link">{{link}}</div>
 		</div>
 		<div class="col-2">
-			<button class="save btn btn-dark" data-id={{@index}}>save this article</button>
+			<button class="view_notes btn" data-id={{_id}}>view notes</button>
 		</div>
 	 </div>
 	{{else}}
 	 <div class="row m-4 p-2 articleRow">
-	 		no articles have been retrieved</div>
+	 		no articles have been saved!</div>
 	{{/each}}
 </div>
