@@ -6,16 +6,17 @@ var mongoose = require("mongoose");
 
 // var mongojs = require("mongojs");  // <––– need it??????
 
-var db = require("./models");
 
 var PORT = 3000;
 
 var app = express();
 
-// Configure middleware
-
 // app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: "application/vnd.api+json" }));
+
 app.use(express.static("public"));
 
 // By default mongoose uses callbacks for async queries, 
