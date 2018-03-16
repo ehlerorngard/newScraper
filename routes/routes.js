@@ -113,9 +113,10 @@ module.exports = function(app) {
 			console.log("newNote._id about to be pushed is THIS: ", newNote._id); 
 			const arrnote = {key: newNote._id};
 			const newn = [newNote._id];
+			console.log("article number to be sought ", req.params.id);
 			db.Article.update(
 				{_id: req.params.id },
-				{ $set: {note: newNote._id} },
+				{ $push: {note: newNote._id} },
 				{ new: true }
 			).then(function(devolucion) {
 				console.log("here's what came back from the ARTICLE find and update: ", devolucion);
@@ -135,7 +136,7 @@ module.exports = function(app) {
 			console.log("newNote._id about to be pushed is THIS: ", newNote._id); 
 			const arrnote = {key: newNote._id};
 			const newn = [newNote._id];
-			db.Article.update(
+			db.Article.findOneAndUpdate(
 				{_id: req.params.id },
 				{ $set: {note: newNote._id} },
 				{ new: true }
