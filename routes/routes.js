@@ -20,17 +20,26 @@ module.exports = function(app) {
     		res.json(err);
   		});
 	});
-	app.get("/viewnotes", function(req, res) {
-		db.Article.find({ _id: req.body }).populate("note")
+	app.post("/viewnotes", function(req, res) {
+		console.log("this is req.body \n", req.body);
+		console.log("this is req.body.id \n", req.body.id);
+		db.Article.find({ _id: req.body.id }) //.populate("note")
 		.then(function(notas) {
-			console.log(notas);
-			let obj = { key: notas };
-			console.log(obj);
-			res.json(obj);
+			console.log("this is the full native array: ", notas);
+			res.json(notas);
 		}).catch(function(err) {
+			console.log("found an error", err);
 			res.json(err)
 		});
 	});
+	app.post("/getnotes", function(req, res) {
+		console.log("this is req.body.ids: \n", req.body.ids);
+		db.Note.find({ _id: req.body.ids }, {multi: true})
+		.then(function(delivery) {
+			console.log("this is the note bunch that came back: \n", delivery);
+			res.json(delivery);
+		})
+	})
 
 // ===============================
 // ======= scrape NPR ============
@@ -73,9 +82,9 @@ module.exports = function(app) {
 	app.post("/save", function(req, res) {
 
 		db.Article.create(req.body)
-      	.then(function(dbArticle) {
+      	.then(function(newArti) {
           // View the added result in the console
-         	console.log(dbArticle);
+         	console.log(newArti);
       	}).catch(function(err) {
           // If an error occurred, send it to the client
          	return res.json(err);
@@ -84,6 +93,33 @@ module.exports = function(app) {
       // res.redirect("/");
       res.json("saved");
 	});
+
+// ===============================
+// ========= create note =========
+// ===============================
+	app.post("/createnote/:id", function(req, res) {
+		console.log("this is req.body: ", req.body);
+		db.Note.create(req.body).then(function(newNote) {
+			console.log("here's the new note: ", newNote);
+			// NOW that we've created the new note,
+			// we need to put that note's new _id in the 
+			// notes values of its related article:  
+			db.Article.findOneAndUpdate(
+				{_id: req.params.id },
+				{ $push: {note: newNote._id} },
+				{ new: true }
+			).then(function(devolucion) {
+				console.log("here's what came back from the find and update: ", devolucion);
+			});
+		}).then(function(dev) {
+			console.log("idk what this should be... getBack from creating the note? ", devol);
+			res.json();
+		}).catch(function(err) {
+			return res.json(err);
+		});
+	});
+
+
 
 // ===============================
 // ========= update note =========

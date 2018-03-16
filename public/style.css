@@ -23,7 +23,7 @@
 #view_saved {
 	background-color: hsla(61, 53%, 10%, 1);
 	border-radius: 10px;	
-	border: none;
+	border: solid gray 1px;
 }
 #npr {
 	background-color: hsla(345, 45%, 23%, 1);
@@ -46,7 +46,26 @@
 	background-color: hsla(57, 65%, 40%, 1);
 	font-weight: 700;
 	color: white;
+	margin-left: -6px;
 }
 .view_notes:hover {
 	background-color: hsla(57, 65%, 25%, 1)
+}
+.rowdal {
+	border: solid gray 2px;
+	border-radius: 3px;
+	background-color: lightgray;
+}
+.notle {
+	display: inline-block;
+	font-size: 20px;
+	width: 100%;
+}
+.nody {
+	display: inline-block;
+	font-size: 14px;
+	width: 100%;
+}
+.col-2 {
+	padding-top: 20px;
 }
