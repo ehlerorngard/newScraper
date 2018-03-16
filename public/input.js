@@ -89,7 +89,7 @@ $(document).on("click", ".view_notes", function() {
 				data: { ids: theGetback.note }
 			}).then(function(theReturn) {
 				console.log("the result of the getnotes is an array: \n", theReturn);
-				theReturn.forEach(function(element) {
+				theReturn[0].forEach(function(element) {
 					console.log("I know the note title: ", element.title);
 
 					let htmlString = "<div class='row rowdal oldNote m-2 p-1'><input class='notle oldNotle m-1' id='title"
@@ -99,12 +99,14 @@ $(document).on("click", ".view_notes", function() {
 					$(".modal-body").append(htmlString);
 					$("#title" + element._id).val(element.title);
 					$("#corpus" + element._id).val(element.corpus);
-					$("#modal_body").append("<div class='row rowdal m-2 p-1'>"
-						+ "<input class='notle newNotle m-1' placeholder='enter new note title here'>"
-						+ "<input class='nody newNody m-1' placeholder='enter new note here'></div>")
 					console.log("here's the htmlstring: ", htmlString);
 				});
 			});
+			$("#modal_body").append("<div class='row rowdal m-2 p-1'>"
+						+ "<input class='notle newNotle m-1' placeholder='enter new note title here'>"
+						+ "<input class='nody newNody m-1' placeholder='enter new note here'></div>")
+
+
 		}
 
 		else {
@@ -122,19 +124,20 @@ $(document).on("click", ".view_notes", function() {
 $(document).on("click", ".save_notes", function() {
 
 	const article_id = $(this).data("id");
-
-	$.ajax({
-		method: "POST",
-		url: "/createnote/" + article_id,
-		data: {
-			title: $('.newNotle').val().trim(),
-			corpus: $('.newNody').val().trim()
-		}
-	}).then(function(elm) {
-		console.log("note saved!", elm);
-		$("#notes_modal").modal("hide");
-		// location.reload();
-	});
+	if ($('.newNotle').val() !== "") {
+		$.ajax({
+			method: "POST",
+			url: "/createnote/" + article_id,
+			data: {
+				title: $('.newNotle').val().trim(),
+				corpus: $('.newNody').val().trim()
+			}
+		}).then(function(elm) {
+			console.log("note saved!", elm);
+			$("#notes_modal").modal("hide");
+			// location.reload();
+		});
+	}
 	$(".oldNote").each(function(i, element) {
 		$.ajax({
 			method: "POST",
@@ -153,10 +156,14 @@ $(document).on("click", ".save_notes", function() {
 });
 
 $(document).on("click", ".delete", function() {
+	console.log(".delete button clicked");
 	const article_id = $(this).parent().parent().data('id');
 	const note_id = $(this).data("id");
+	console.log("article id: ", article_id);
+	console.log("note id: ", note_id);
+
 	$.ajax({
-		mehtod: "POST",
+		method: "POST",
 		url: "/deletenote",
 		data: {
 			article_id: article_id,
@@ -164,5 +171,6 @@ $(document).on("click", ".delete", function() {
 		}
 	}).then(function(reception) {
 		console.log("after DELETION ", reception);
+			$("#notes_modal").modal("hide");
 	});
 });

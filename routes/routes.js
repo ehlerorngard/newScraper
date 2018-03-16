@@ -43,12 +43,18 @@ module.exports = function(app) {
 	});
 	app.post("/getnotes", function(req, res) {
 		console.log("this is req.body.ids: \n", req.body.ids);
-		db.Note.find({ _id: req.body.ids }, {})
-		.then(function(delivery) {
-			console.log("this is the note bunch ARRAY that came back: \n", delivery);
-			res.json(delivery);
-		})
-	})
+		const theMail = [];
+		for (let i = 0; i < req.body.ids.length; i++) {
+			db.Note.find({ _id: req.body.ids[i] }, {})
+			.then(function(delivery) {
+				console.log("this is the note bunch ARRAY that came back: \n", delivery);
+				theMail.push(delivery);
+				res.send(theMail);
+
+			});
+		}
+		console.log("this is theMAIL: ", theMail);
+	});
 
 // ===============================
 // ======= scrape NPR ============
@@ -153,7 +159,7 @@ module.exports = function(app) {
 
 
 // ===============================
-// ========= update note ========= // DONT FUCK WITH THIS
+// ========= update note =========
 // ===============================
 	app.post("/updatenote", function(req, res) {
 		db.Note.findOneAndUpdate(
@@ -167,7 +173,6 @@ module.exports = function(app) {
 	  		res.json(err); 
 	  	});
 	});
-
 
 // ===============================
 // ========= delete note =========
