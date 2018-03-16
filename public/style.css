@@ -14,22 +14,49 @@
 	background-color: hsla(193, 53%, 22%, 1);
 }
 .nav-item {
-	background-color: hsla(61, 53%, 25%, 1);
 	margin: 10px;
 	border-radius: 10px;
 	font-family: "Abel", sans;
 	font-size: 20px;
+}
+#home {
+	background-color: hsla(61, 53%, 25%, 1);
+	border: solid 1px hsla(61, 53%, 25%, 1);
+	border-radius: 10px;
+}
+#home:hover {
+	background-color: hsla(61, 53%, 19%, 1);
+	border: solid gray 1px;
+	border-radius: 10px;
 }
 #view_saved {
 	background-color: hsla(61, 53%, 10%, 1);
 	border-radius: 10px;	
 	border: solid gray 1px;
 }
+#view_saved:hover {
+	background-color: hsla(61, 53%, 3%, 1);
+}
+.hide_saved {
+	display: none;
+}
+.btn-success {
+	justify-content: center;
+	border-radius: 6px;
+	font-weight: 700;
+	padding: 20px;
+}
 #npr {
 	background-color: hsla(345, 45%, 23%, 1);
 	border-radius: 10px;
 	border: solid gray 1px;
 }
+#npr:hover {
+	background-color: hsla(345, 45%, 13%, 1);
+}
+/*.save {
+	margin-left: -30px;
+}*/
 .articleRow {
 	border: solid gray 2px;
 	border-radius: 4px;

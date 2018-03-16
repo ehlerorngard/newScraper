@@ -11,6 +11,15 @@ module.exports = function(app) {
 	app.get("/", function (req, res) {
 		res.render('home');
 	});
+	app.get("/viewsavedhome", function (req, res) {
+		res.redirect('/');
+	});
+	app.get("/saved", function (req, res) {
+		res.redirect('/viewsaved');
+	});
+	app.get("/viewsavedsaved", function (req, res) {
+		res.redirect('/viewsaved');
+	});
 	app.get("/viewsaved", function(req, res) {
 		db.Article.find({}).then(function(allarticles) {
 			console.log(allarticles)
@@ -21,11 +30,11 @@ module.exports = function(app) {
   		});
 	});
 	app.post("/viewnotes", function(req, res) {
-		console.log("this is req.body \n", req.body);
-		console.log("this is req.body.id \n", req.body.id);
+		console.log("VIEWING NOTES req.body \n", req.body);
+		console.log("VIEW.. req.body.id \n", req.body.id);
 		db.Article.find({ _id: req.body.id }) //.populate("note")
 		.then(function(notas) {
-			console.log("this is the full native array: ", notas);
+			console.log("VIEWING NOTES the full native array: ", notas);
 			res.json(notas);
 		}).catch(function(err) {
 			console.log("found an error", err);
@@ -34,9 +43,9 @@ module.exports = function(app) {
 	});
 	app.post("/getnotes", function(req, res) {
 		console.log("this is req.body.ids: \n", req.body.ids);
-		db.Note.find({ _id: req.body.ids }, {multi: true})
+		db.Note.find({ _id: req.body.ids }, {})
 		.then(function(delivery) {
-			console.log("this is the note bunch that came back: \n", delivery);
+			console.log("this is the note bunch ARRAY that came back: \n", delivery);
 			res.json(delivery);
 		})
 	})
@@ -80,14 +89,14 @@ module.exports = function(app) {
 // ======= save an article =======
 // ===============================
 	app.post("/save", function(req, res) {
-
+		console.log("SAVE REQUEST req.body is \n", req.body);
 		db.Article.create(req.body)
       	.then(function(newArti) {
           // View the added result in the console
          	console.log(newArti);
       	}).catch(function(err) {
           // If an error occurred, send it to the client
-         	return res.json(err);
+         	return console.log(err);
       	});
       console.log("article saved");
       // res.redirect("/");
@@ -98,18 +107,40 @@ module.exports = function(app) {
 // ========= create note =========
 // ===============================
 	app.post("/createnote/:id", function(req, res) {
-		console.log("this is req.body: ", req.body);
+		console.log("this is req.body yet to be SAVED: ", req.body);
 		db.Note.create(req.body).then(function(newNote) {
-			console.log("here's the new note: ", newNote);
-			// NOW that we've created the new note,
-			// we need to put that note's new _id in the 
-			// notes values of its related article:  
-			db.Article.findOneAndUpdate(
+			console.log("here's the new NOTE SUCCESSfully created: ", newNote);
+			console.log("newNote._id about to be pushed is THIS: ", newNote._id); 
+			const arrnote = {key: newNote._id};
+			const newn = [newNote._id];
+			db.Article.update(
 				{_id: req.params.id },
-				{ $push: {note: newNote._id} },
+				{ $set: {note: newNote._id} },
 				{ new: true }
 			).then(function(devolucion) {
-				console.log("here's what came back from the find and update: ", devolucion);
+				console.log("here's what came back from the ARTICLE find and update: ", devolucion);
+			});
+		}).then(function(dev) {
+			console.log("idk what this should be... getBack from creating the note? ", devol);
+			res.json();
+		}).catch(function(err) {
+			return res.json(err);
+		});
+	});
+
+	app.post("/createfirst/:id", function(req, res) {
+		console.log("this is req.body yet to be SAVED: ", req.body);
+		db.Note.create(req.body).then(function(newNote) {
+			console.log("here's the new NOTE SUCCESSfully created: ", newNote);
+			console.log("newNote._id about to be pushed is THIS: ", newNote._id); 
+			const arrnote = {key: newNote._id};
+			const newn = [newNote._id];
+			db.Article.update(
+				{_id: req.params.id },
+				{ $set: {note: newNote._id} },
+				{ new: true }
+			).then(function(devolucion) {
+				console.log("here's what came back from the ARTICLE find and update: ", devolucion);
 			});
 		}).then(function(dev) {
 			console.log("idk what this should be... getBack from creating the note? ", devol);
@@ -120,9 +151,8 @@ module.exports = function(app) {
 	});
 
 
-
 // ===============================
-// ========= update note =========
+// ========= update note ========= // DONT FUCK WITH THIS
 // ===============================
 	app.post("/updatenote", function(req, res) {
 		db.Note.findOneAndUpdate(
@@ -130,19 +160,37 @@ module.exports = function(app) {
 			{ $set: { title: req.body.title, corpus: req.body.corpus } }, 
 			{ new: true })
 		.then(function(result) {
-	   	console.log("This should be the new note: " + result);
+	   	console.log("This should be the new UPDATED note: " + result);
 	   	res.json(result); })
 		.catch(function(err) {
 	  		res.json(err); 
 	  	});
 	});
-}
 
 
 // ===============================
 // ========= delete note =========
 // ===============================
+	app.post("/deletenote", function(req, res) {
+		console.log("IMPORTANT_  the req.body \n", req.body);
+		db.Note.findByIdAndRemove(req.body.note_id)
+		.then(function(result) {
+	   	console.log("Note DELETED: " + result);
+	   	db.Article.findOneAndUpdate(
+	   		{ _id: req.body.article_id },
+	   		{ $pull: {note: req.body.note_id} },
+	   		{ new: true }
+	   	).then(function(output) {
+	   		console.log("ARTICLE after the article update: ", output);
+	   	}).catch(function(err) {res.json(err);});
+	   	res.json(result); })
+		.catch(function(err) {
+	  		res.json(err); 
+	  	});
+	});
 
 // ===============================
 // ====== unsave article =========
 // ===============================
+
+}
