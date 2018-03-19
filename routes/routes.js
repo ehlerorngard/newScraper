@@ -14,6 +14,9 @@ module.exports = function(app) {
 	app.get("/viewsavedhome", function (req, res) {
 		res.redirect('/');
 	});
+	app.get("/home", function (req, res) {
+		res.redirect('/');
+	});
 	app.get("/saved", function (req, res) {
 		res.redirect('/viewsaved');
 	});
