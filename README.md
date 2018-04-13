@@ -1,15 +1,16 @@
 # newScraper
-for scraping and saving news articles' links with editable notes
+
+This is a full-stack app for scraping and saving NPR news articles' links along with editable notes.
 
 This app uses Node, Express, MongoDB, Mongoose, Axios, & Handlebars.  
 
 
 ## Where
 
-You can find it deployed on Heroku here: 
+You can view the app deployed on Heroku here: 
 https://shrouded-scrubland-93662.herokuapp.com/
 
-and to GitHub here: 
+and on GitHub here: 
 https://github.com/ehlerorngard/newScraper
 
 
