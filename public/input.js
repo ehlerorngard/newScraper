@@ -7,41 +7,28 @@ $(document).on("click", "#view_saved", function() {
 });
 
 $(document).on("click", "#npr", function() {
-	console.log("npr button works");
 	$.ajax({
    	method: "GET",
    	url: "/scrape/npr",
    })
    .then(function(bundle) {
-   		$("#article_box9").empty();
-   		console.log("box emptied...");
-  			for (let i = 0; i < bundle.length; i++) {
-  				console.log("this is iteration " + i);
-	    	   $("#article_box9").append("<div class='row m-4 p-2 articleRow'><div class='col-9'><div class='title'>" 
-	    	   	+ bundle[i].title + "</div><a class='link' href="
-	    	   	+ bundle[i].link + ">" + bundle[i].link + "</a></div><div class='col-2'><button class='save btn btn-dark'>save this article</button></div></div>");
-	    	}
-	    	$.ajax({
-	    		method: "GET",
-	    		url: "/"
-	    	});
-
-
-	    	// window.location.href = path.join (__dirname, "/");
-  	})
-  	;
-
+		$("#article_box9").empty();
+			for (let i = 0; i < bundle.length; i++) {
+    	   $("#article_box9").append("<div class='row m-4 p-2 articleRow'><div class='col-9'><div class='title'>" 
+    	   	+ bundle[i].title + "</div><a class='link' href="
+    	   	+ bundle[i].link + ">" + bundle[i].link + "</a></div><div class='col-2'><button class='save btn btn-dark'>save this article</button></div></div>");
+    	}
+    	$.ajax({
+    		method: "GET",
+    		url: "/"
+    	});
+  	});
 });
 
 $(document).on("click", ".save", function() {
-	console.log("save button works");
-	// get the data to be sent to the database
 	$(this).addClass("hide_saved");
 	$(this).removeClass("save");
 	$(this).parent().append("<div class='btn-success'>article saved</div>");
-
-	console.log("this is the title of the button clicked: " 
-		+ $(this).parent().parent().find("div.title").text())
 	$.ajax({
 		method: "POST",
 		url: "/save",
@@ -50,15 +37,11 @@ $(document).on("click", ".save", function() {
 			link: $(this).parent().parent().find("a.link").text()
 		}
 	}).then(function(data) {
-		console.log("article SAVED.");
-		// window.location.href = window.location.href + "viewsaved";
+		console.log('data: ', data);
 	});
 });
 
 $(document).on("click", ".view_notes", function() {
-	console.log("view notes button works");
-	console.log($(this).data("id"));
-
 	const article_id = $(this).data("id");
 	$(".modal-body").empty();
 	$("#modal_title").empty();
@@ -69,20 +52,17 @@ $(document).on("click", ".view_notes", function() {
 		url: "/viewnotes",
 		data: { id: article_id }
 	}).then(function(result) {
-		// put the data into the modal..
-		console.log(typeof(result));
+		// put the data into the modal
 		console.log(result);
 		const theGetback = result[0];
-		console.log("just the object? ", theGetback);
 		console.log("theGetback.note: \n", theGetback.note);
-		console.log(typeof theGetback.note);
 		if (typeof theGetback.note !== "array") {
 			$(".save_notes").data("isArray", false);
 		}
-		if ((theGetback.note) && (typeof theGetback.note !== "array")) {
+		else if ((theGetback.note) && (typeof theGetback.note !== "array")) {
 			theGetback.note = [theGetback.note];
 		}
-		if (theGetback.note) {
+		else if (theGetback.note) {
 			$.ajax({
 				method: "POST",
 				url: "getnotes",
@@ -99,21 +79,17 @@ $(document).on("click", ".view_notes", function() {
 					$(".modal-body").append(htmlString);
 					$("#title" + element._id).val(element.title);
 					$("#corpus" + element._id).val(element.corpus);
-					console.log("here's the htmlstring: ", htmlString);
 				});
 			});
 			$("#modal_body").append("<div class='row rowdal m-2 p-1'>"
 						+ "<input class='notle newNotle m-1' placeholder='enter new note title here'>"
-						+ "<input class='nody newNody m-1' placeholder='enter new note here'></div>")
-
-
+						+ "<input class='nody newNody m-1' placeholder='enter new note here'></div>");
 		}
-
 		else {
 			$(".modal-body").append("<div class='alert alert-primary'>no notes to display!</div>");
 			$("#modal_body").append("<div class='row rowdal m-2 p-1'>"
 				+ "<input class='notle newNotle m-1' placeholder='enter new note title here'>"
-				+ "<input class='nody newNody m-1' placeholder='enter new note here'></div>")
+				+ "<input class='nody newNody m-1' placeholder='enter new note here'></div>");
 		}
 		$("#modal_title").append(" " + theGetback.title);
 		$("#save_notes_button").data("id", theGetback._id);
@@ -122,7 +98,6 @@ $(document).on("click", ".view_notes", function() {
 });
 
 $(document).on("click", ".save_notes", function() {
-
 	const article_id = $(this).data("id");
 	if ($('.newNotle').val() !== "") {
 		$.ajax({
@@ -135,7 +110,6 @@ $(document).on("click", ".save_notes", function() {
 		}).then(function(elm) {
 			console.log("note saved!", elm);
 			$("#notes_modal").modal("hide");
-			// location.reload();
 		});
 	}
 	$(".oldNote").each(function(i, element) {
@@ -170,7 +144,6 @@ $(document).on("click", ".delete", function() {
 			note_id: note_id
 		}
 	}).then(function(reception) {
-		console.log("after DELETION ", reception);
-			$("#notes_modal").modal("hide");
+		$("#notes_modal").modal("hide");
 	});
 });
